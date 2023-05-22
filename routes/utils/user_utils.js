@@ -9,6 +9,7 @@ async function getFavoriteRecipes(user_id){
     return recipes_id;
 }
 
+// getSeenRecipes
 
 
 exports.markAsFavorite = markAsFavorite;
