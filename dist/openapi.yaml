@@ -144,60 +144,60 @@ paths:
             content:
               application/json:
                 schema:
-                  type: array
+                 type: array 
                   items:
                     $ref: '#/components/schemas/RecipePreview'
                    
           '400':
             description: No recipes found
-  /user/lastViewedRecipes:
-    get:
-      tags:
-        - Users 
-      summary: get three last viewed recipes by user from the server.
-      description: Get from the client a username and returns 3 last view recipes by user.
-      parameters: 
-        - in: path
-          name: username
-          description:  The user name
-          required: true
-          schema:
-            type: array  
-            items:
-                  $ref: '#/components/schemas/RecipePreview'
-      responses:
-        '200':
-          description: Success -showing last recipes.
+   /user/lastViewedRecipes:
+      get:
+        tags:
+          - Users 
+        summary: get three last viewed recipes by user from the server.
+        description: Get from the client a username and returns 3 last view recipes by user.
+        parameters: 
+          - in: path
+            name: username
+            description:  The user name
+            required: true
+            schema:
+              type: array  
+              items:
+                    $ref: '#/components/schemas/RecipePreview'
+        responses:
+          '200':
+            description: Success -showing last recipes.
+            content:
+              application/json:
+                schema:
+                 type: array  
+                 items:
+                    $ref: '#/components/schemas/RecipePreview'
+          '404':
+            description: User not found
+      post:
+        tags:
+        - Users
+        summary: save recipe as seen by the user
+        description: save recipe as seen by the users in the last seen list of a user
+        requestBody:
           content:
             application/json:
               schema:
-                type: array  
-                items:
-                  $ref: '#/components/schemas/RecipePreview'
-        '404':
-          description: User not found
-      # post:
-      #   tags:
-      #   - Users
-      #   summary: save recipe as seen by the user
-      #   description: save recipe as seen by the users in the last seen list of a user
-      #   requestBody:
-      #     content:
-      #       application/json:
-      #         schema:
-      #           type: object
-      #           properties:
-      #             reciepeId:
-      #               type: string
-      #               description: reciepe's id which the user saved as watched
-      #               example: 716429
-      #   responses:
-      #     "200":
-      #       description: The Recipe successfully saved as watched
-      #     "401":
-      #       description: user is not authorized
-      #   security:
-      #   - cookieAuth: []
+                type: object
+                properties:
+                  reciepeId:
+                    type: string
+                    description: reciepe's id which the user saved as watched
+                    example: 716429
+        responses:
+          "200":
+            description: The Recipe successfully saved as watched
+          "401":
+            description: user is not authorized
+        security:
+        - cookieAuth: []
 
 components:
   schemas:
