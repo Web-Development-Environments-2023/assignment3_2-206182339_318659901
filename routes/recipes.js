@@ -17,18 +17,16 @@ router.get("/:recipeId", async (req, res, next) => {
   }
 });
 
-/**
- * This path returns 3 random recipes
- */
-router.get("/randomRecipes", async (req, res, next) => {
-  try {
-    let random_recipes = await recipes_utils.getRandomRecipesAPI(amount);
-    res.status(200).send(random_recipes)
-    
+router.get("/:randomRecipes", async (req, res, next) => {
+    try {
+    // const user_id = req.session.user_id;
+    const randomRecipes = await recipes_utils.getRandomRecipesAPI();
+    for (const r of randomRecipes){
+      const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
+      res.send(recipe);
+    }
   } catch (error) {
     next(error);
   }
 });
-
-
 module.exports = router;
