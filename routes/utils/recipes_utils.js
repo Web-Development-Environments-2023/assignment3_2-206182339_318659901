@@ -76,16 +76,16 @@ async function getRecipeDetails(recipe_id) {
 }
 
 async function getRandomRecipes(amount){
-    const response = await axios.get(`${api_domain}/random`, {
+    const recipe = await axios.get(`${api_domain}/randomRecipes`, {
         params:{
             number: amount,
             apiKey: process.env.api_token
         }
     })
-    return response;
+    return recipe;
 }
 
-async function getRandomRecipesAPI(amount){
+async function getRandomRecipesAPI(){
     let random_pool = await getRandomRecipes(3);
     let to_return = []
     for(const element of random_pool.data.recipes){
