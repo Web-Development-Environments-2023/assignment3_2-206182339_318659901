@@ -3,7 +3,6 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
-
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -30,7 +29,8 @@ router.post('/favorites', async (req,res,next) => {
     const recipe_id = req.body.recipeId;
     await user_utils.markAsFavorite(user_id,recipe_id);
     res.status(200).send("The Recipe successfully saved as favorite");
-    } catch(error){
+    } 
+  catch(error){
     next(error);
   }
 })

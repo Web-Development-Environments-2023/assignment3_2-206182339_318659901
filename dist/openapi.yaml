@@ -172,60 +172,32 @@ paths:
             content:
               application/json:
                 schema:
-                 type: array 
+                  type: array 
                   items:
                     $ref: '#/components/schemas/RecipePreview'
                    
           '400':
             description: No recipes found
   /user/lastViewedRecipes:
-    get:
-      tags:
+      get:
+        tags:
         - Users 
-      summary: get three last viewed recipes by user from the server.
-      description: Get from the client a id and returns 3 last view recipes by user.
-      parameters: 
-        - in: path
-          name: user ID
-          description:  The user id
-          required: true
-          schema:
-            type: array  
-            items:
-                  $ref: '#/components/schemas/RecipePreview'
-      responses:
-        '200':
-          description: Success -showing last recipes.
-          content:
-            application/json:
-              schema:
-                type: array  
-                items:
-                  $ref: '#/components/schemas/RecipePreview'
-        '404':
-          description: User not found
-      # post:
-      #   tags:
-      #   - Users
-      #   summary: save recipe as seen by the user
-      #   description: save recipe as seen by the users in the last seen list of a user
-      #   requestBody:
-      #     content:
-      #       application/json:
-      #         schema:
-      #           type: object
-      #           properties:
-      #             reciepeId:
-      #               type: string
-      #               description: reciepe's id which the user saved as watched
-      #               example: 716429
-      #   responses:
-      #     "200":
-      #       description: The Recipe successfully saved as watched
-      #     "401":
-      #       description: user is not authorized
-      #   security:
-      #   - cookieAuth: []
+        summary: Return the 3 last seen recipes the user watched
+        description: Get an array of recipes that were seen by a specific user
+        responses:
+          "200":
+            description: data about the user's last seen recipes returned
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RecipePreview'
+          "401":
+            description: user is not authorized
+        security:
+        - cookieAuth: []
+
 
 components:
   schemas:
@@ -342,7 +314,7 @@ components:
             example: 1) boil water. 2) put coffe in cup.
           numberOfDishes:
             type: number
-      Ingredient:
+    Ingredient:
         required:
         - amount
         - name

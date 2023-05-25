@@ -1,5 +1,6 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
+const DButils = require("./DButils");
 
 
 
@@ -76,7 +77,7 @@ async function getRecipeDetails(recipe_id) {
 }
 
 async function getRandomRecipes(amount){
-    const recipe = await axios.get(`${api_domain}/randomRecipes`, {
+    const recipe = await axios.get(`${api_domain}/random`, {
         params:{
             number: amount,
             apiKey: process.env.api_token
@@ -176,7 +177,7 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
 async function addUserRecipeToSeen(recipe_id, user_id){
     if(user_id != undefined && recipe_id != undefined){
         await DButils.execQuery
-        (`INSERT INTO recipeseen VALUES(default,${user_id},'${recipe_id}')`)
+        (`INSERT INTO recipeseen  (user_id,recipe_id) VALUES('${user_id}','${recipe_id}')`)
     }    
 }
 
@@ -185,4 +186,5 @@ exports.getRecipeDetails = getRecipeDetails;
 
 exports.getRecipesPreview = getRecipesPreview;
 exports.getRecipeFullDetails=getRecipeFullDetails;
+exports.getRandomRecipesAPI=getRandomRecipesAPI;
 

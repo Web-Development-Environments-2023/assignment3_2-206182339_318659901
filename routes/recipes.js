@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
+const DButils = require("./utils/DButils");
 
 router.get("/", (req, res) => res.send("im here"));
 
@@ -22,7 +23,7 @@ router.get("/:recipeId", async (req, res, next) => {
  */
 router.get("/randomRecipes", async (req, res, next) => {
   try {
-    let random_recipes = await recipes_utils.getRandomRecipesAPI(req.query.amount);
+    let random_recipes = await recipes_utils.getRandomRecipesAPI();
     res.status(200).send(random_recipes)
     
   } catch (error) {
@@ -35,7 +36,7 @@ router.get("/randomRecipes", async (req, res, next) => {
  */
 router.get("/ExtendedRecipes/:recipeId", async (req, res, next) => {
   try {
-    const isMyRecipe=req.query.isMyRecipe=='true'
+    const isMyRecipe=req.body.isMyRecipe=='true'
     const user_id = req.session.user_id; // can be null
     const recipe = await recipes_utils.getRecipeFullDetails(isMyRecipe,req.params.recipeId, user_id, add_to_seen = true);
     res.send(recipe);
