@@ -18,3 +18,4 @@ return recipes_id;
 
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
+exports.getSeenRecipes = getSeenRecipes;

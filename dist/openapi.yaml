@@ -133,6 +133,32 @@ paths:
                 $ref: '#/components/schemas/RecipePreview'
         "404":
           description: recipeId is not exists
+  /recipes/ExtendedRecipes/{recipeId}:
+    get:
+      tags:
+      - Recipes
+      summary: Return full details on recipe by its ID
+      description: Return full details on recipe by its ID
+      parameters:
+      - name: recipeId
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: full data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedRecipe'
+        "404":
+          description: recipeId is not exists
+
+
   /recipes/randomRecipes:
       get:
         tags:
@@ -141,6 +167,8 @@ paths:
         responses:
           '200':
             description: The 3 randomal recipes.
+            paramaters:
+            - name: amount
             content:
               application/json:
                 schema:
@@ -155,11 +183,11 @@ paths:
       tags:
         - Users 
       summary: get three last viewed recipes by user from the server.
-      description: Get from the client a username and returns 3 last view recipes by user.
+      description: Get from the client a id and returns 3 last view recipes by user.
       parameters: 
         - in: path
-          name: username
-          description:  The user name
+          name: user ID
+          description:  The user id
           required: true
           schema:
             type: array  
@@ -293,4 +321,38 @@ components:
           type: boolean
           description: indication if the recipe is gluten free
           example: false
-  
+
+    ExtendedRecepie:
+        required:
+        - ingredient
+        - numberOfDishes
+        - prepInstructions
+        - recepiePreview
+        type: object
+        properties:
+          recepiePreview:
+            $ref: '#/components/schemas/RecepiePreview'
+          ingredient:
+            type: array
+            items:
+              $ref: '#/components/schemas/Ingredient'
+          prepInstructions:
+            type: string
+            format: <step number><delimiter><instruction>.
+            example: 1) boil water. 2) put coffe in cup.
+          numberOfDishes:
+            type: number
+      Ingredient:
+        required:
+        - amount
+        - name
+        type: object
+        properties:
+          name:
+            type: string
+            example: Paprika
+          amount:
+            type: string
+            format: <amount> <units>
+            example: 1 Liter
+    
