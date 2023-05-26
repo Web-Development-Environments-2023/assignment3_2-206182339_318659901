@@ -5,19 +5,6 @@ const DButils = require("./utils/DButils");
 
 router.get("/", (req, res) => res.send("im here"));
 
-
-/**
- * This path returns a full details of a recipe by its id
- */
-router.get("/:recipeId", async (req, res, next) => {
-  try {
-    const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
-    res.send(recipe);
-  } catch (error) {
-    next(error);
-  }
-});
-
 /**
  * This path returns 3 random recipes
  */
@@ -30,6 +17,32 @@ router.get("/randomRecipes", async (req, res, next) => {
     next(error);
   }
 });
+
+
+router.get("/search",async (req, res, next) => {
+  try {
+    
+    const user_id = req.session.user_id; // can be null
+    //last vied recipe
+    const recipe = await recipes_utils.getSearchResults(req.query.recipename,req.query.number,req.query.Cuisine,req.query.diet, req.query.intolerance,req.query.sort,user_id);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+/**
+ * This path returns a full details of a recipe by its id
+ */
+router.get("/:recipeId", async (req, res, next) => {
+  try {
+    const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 /**
  * This path returns a full details of a recipe by its id
@@ -44,6 +57,5 @@ router.get("/ExtendedRecipes/:recipeId", async (req, res, next) => {
     next(error);
   }
 });
-
 
 module.exports = router;

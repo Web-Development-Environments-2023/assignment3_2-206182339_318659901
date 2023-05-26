@@ -109,6 +109,43 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+  /users/MyRecipes:
+    get:
+      tags:
+      - Users
+      summary: get a the details of recipe that the user created
+      description: A json object contains all the details about this recipe
+      operationId: CreatedRecipe
+
+      responses:
+        '200':
+          description: A the details of a recipe that the user created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtendedRecipe'
+        '400':
+          description: bad input parameter  
+
+    post:
+      tags:
+        - Users
+      summary: the user can create a new recipe
+      description: A json object contains details about the new recipe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtendedRecipe'
+        description: Inventory item to add
+      responses:
+        '201':
+          description: A new recipe has been added
+        '400':
+          description: wrong input parameter
   /recipes/{recipeId}:
     get:
       tags:
@@ -167,8 +204,6 @@ paths:
         responses:
           '200':
             description: The 3 randomal recipes.
-            paramaters:
-            - name: amount
             content:
               application/json:
                 schema:
@@ -178,6 +213,65 @@ paths:
                    
           '400':
             description: No recipes found
+
+  /recipes/search:
+      get:
+        tags:
+          - Recipes
+        summary: search for recipes by filter
+        parameters:
+        - name: recipename
+          in: query
+          description: recipe name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: number
+          in: query
+          description: how much recipes will return :5/10/15
+          style: simple
+          explode: false
+          schema:
+            type: integer
+        - name: Cuisine
+          in: query
+          description: kind of recipe
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: diet
+          in: query
+          description: specific diet of a recipe
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: intolerance
+          in: query
+          description: specific intolerance of a recipe
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        responses:
+          '200':
+            description: The recipes came back from the search.
+            content:
+              application/json:
+                schema:
+                  type: array 
+                  items:
+                    $ref: '#/components/schemas/RecipePreview'
+                   
+          '400':
+            description: No recipes found
+
   /user/lastViewedRecipes:
       get:
         tags:
@@ -328,3 +422,4 @@ components:
             format: <amount> <units>
             example: 1 Liter
     
+
