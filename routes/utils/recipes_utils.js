@@ -2,6 +2,7 @@ const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 const DButils = require("./DButils");
 const { search } = require("../auth");
+const { query } = require("express");
 
 
 
@@ -219,6 +220,31 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
     
     return  res;
 }
+
+async function getFamilyRecipes(user_id){
+    const data = await DButils.execQuery(`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
+    const dataList = [];
+    for (let i = 0; i < data.length; i++) {
+        dataList.push(
+            { id : query.recipeid.toString(),
+                name : query.recname,
+                member : familymember,
+                time : makingtime,
+                ingredients : ingredients,
+                summary : summary
+                // TODO add an image
+            }
+        )
+    //   const row = data[i];
+    //   for (const columnName in row) {
+    //     const columnData = row[columnName];
+    //     dataList.push(columnData);
+    //   }
+    }
+    return dataList;
+}
+
+
 
 // async function getSearchAPI(name, number, cuisine, diet, intolerance,sort) { 
 //     let search_url= `${api_domain}/complexSearch/?`
