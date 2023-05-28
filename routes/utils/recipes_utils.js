@@ -219,7 +219,7 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
 }
 
 async function getFamilyRecipes(user_id){
-    return queryAndAdjustDb
+    return 
         (`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
 }
 
