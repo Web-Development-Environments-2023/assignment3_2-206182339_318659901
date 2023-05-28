@@ -18,7 +18,9 @@ router.get("/randomRecipes", async (req, res, next) => {
   }
 });
 
-
+/**
+ * This path leads to the search page so users can search for specific recipes
+ */
 router.get("/search",async (req, res, next) => {
   try {
     
@@ -49,7 +51,7 @@ router.get("/:recipeId", async (req, res, next) => {
  */
 router.get("/ExtendedRecipes/:recipeId", async (req, res, next) => {
   try {
-    const isMyRecipe=req.body.isMyRecipe=='true'
+    const isMyRecipe=req.body.isMyRecipe=='true';
     const user_id = req.session.user_id; // can be null
     const recipe = await recipes_utils.getRecipeFullDetails(isMyRecipe,req.params.recipeId, user_id, add_to_seen = true);
     res.send(recipe);

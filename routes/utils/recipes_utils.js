@@ -108,12 +108,12 @@ async function getRecipeInfoFromApi(recipe_id) {
     });
     let ingredients = "";
     data.data.extendedIngredients.forEach((element) => 
-        ingredients = ingredients+element.name+" | "+element.amount.toString()+element.unit+" & ")
+        ingredients = ingredients+element.name+"-"+element.amount.toString()+element.unit+" | ")
     return {
         id:data.data.id.toString(),
         title: data.data.title,
-        readyInMinutes: data.data.readyInMinutes,
         image: data.data.image,
+        readyInMinutes: data.data.readyInMinutes,
         aggregateLikes: data.data.aggregateLikes,
         prepInstructions: data.data.instructions,
         ingredients: ingredients,
@@ -130,10 +130,10 @@ async function getRecipeInfoFromDb(recipe_id){
     return {
         id:data[0].rid.toString(),
         title: data[0].title,
-        readyInMinutes: data[0].prep_time,
         image: data[0].image,
+        readyInMinutes: data[0].prep_time,
         aggregateLikes: data[0].popularity,
-        prepInstructions: data[0].prep_instructions,
+        prepInstructions: data[0].instructions,
         ingredients: data[0].ingredients,
         numberOfDishes: data[0].number_of_dishes,
         vegetarian:(data[0].vegetarian[0]==1),
@@ -154,7 +154,7 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
     else{ // neither inner or outer
         throw { status: 404, message: "no such recipe" };
     }
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, 
+    let { id, title, image, readyInMinutes, aggregateLikes,vegetarian, vegan, 
         glutenFree,ingredients, prepInstructions, numberOfDishes } = recipe_info;
     
  
@@ -164,14 +164,16 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
         await addUserRecipeToSeen(id, user_id) 
 
     return {
-        recepiePreview: {
+        recipePreview: {
             id: id,
+            image: image,
             title: title,
             prepTime: readyInMinutes,
             popularity: aggregateLikes,
-            glutenFree: glutenFree,
+            vegetarian : vegetarian,
             vegan: vegan,
-            image: image           
+            glutenFree: glutenFree
+              
         }, 
         ingredients: ingredients, 
         prepInstructions: prepInstructions, 

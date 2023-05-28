@@ -125,7 +125,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ExtendedRecipe'
+                  $ref: '#/components/schemas/RecipePreview'
         '400':
           description: bad input parameter  
 
@@ -389,25 +389,25 @@ components:
           example: false
 
     ExtendedRecepie:
-        required:
-        - ingredient
-        - numberOfDishes
-        - prepInstructions
-        - recepiePreview
-        type: object
-        properties:
-          recepiePreview:
-            $ref: '#/components/schemas/RecepiePreview'
-          ingredient:
-            type: array
-            items:
-              $ref: '#/components/schemas/Ingredient'
-          prepInstructions:
-            type: string
-            format: <step number><delimiter><instruction>.
-            example: 1) boil water. 2) put coffe in cup.
-          numberOfDishes:
-            type: number
+      required:
+      - ingredient
+      - numberOfDishes
+      - prepInstructions
+      - recepiePreview
+      type: object
+      properties:
+        recipePreview:
+          $ref: '#/components/schemas/RecipePreview'
+        ingredient:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        prepInstructions:
+          type: string
+          format: <step number><delimiter><instruction>.
+          example: 1) boil water. 2) put coffe in cup.
+        numberOfDishes:
+          type: number
     Ingredient:
         required:
         - amount

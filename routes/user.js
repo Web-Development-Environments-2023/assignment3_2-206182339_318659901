@@ -72,14 +72,14 @@ router.post('/MyRecipes', async (req,res,next) => {
     const image = req.body.recipePreview.image;
     const title = req.body.recipePreview.title;
     const readyInMinutes = req.body.recipePreview.readyInMinutes;
-    const popularity = req.body.recipePreview.popularity;
+    // const popularity = req.body.recipePreview.popularity;
     const glutenFree = req.body.recipePreview.glutenFree;
     const vegan= req.body.recipePreview.vegan;
     const vegetarian= req.body.recipePreview.vegetarian;
-    const ingredients = req.body.ingredients;
+    const ingredients = req.body.ingredient;
     const prepInstructions = req.body.prepInstructions;
     const numberOfDishes = req.body.numberOfDishes;
-    await user_utils.CreateRecipe(user_id,image,title,readyInMinutes,popularity,glutenFree,vegan,vegetarian,ingredients,prepInstructions,numberOfDishes);
+    await user_utils.CreateRecipe(user_id,image,title,readyInMinutes,glutenFree,vegan,vegetarian,ingredients,prepInstructions,numberOfDishes);
     res.status(200).send("The Recipe successfully created");
     } 
   catch(error){
@@ -93,12 +93,12 @@ router.post('/MyRecipes', async (req,res,next) => {
 router.get('/MyRecipes', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    
-    const recipes_id = await user_utils.getMyRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
+    const recipes_info = await user_utils.getMyRecipes(user_id);
+    // const recipes_id = await user_utils.getMyRecipes(user_id);
+    // let recipes_id_array = [];
+    // recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    // const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    res.status(200).send(recipes_info);
   } catch(error){
     next(error); 
   }
