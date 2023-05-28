@@ -218,6 +218,13 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
     return  res;
 }
 
+async function getFamilyRecipes(user_id){
+    return queryAndAdjustDb
+        (`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
+}
+
+
+
 // async function getSearchAPI(name, number, cuisine, diet, intolerance,sort) { 
 //     let search_url= `${api_domain}/complexSearch/?`
 //     if(name !== undefined){

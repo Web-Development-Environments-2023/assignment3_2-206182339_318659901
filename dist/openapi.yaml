@@ -272,6 +272,27 @@ paths:
           '400':
             description: No recipes found
 
+  /recipes/familyRecipes:
+     get:
+      tags:
+        - Recipes
+      summary: Return the family recipes
+      description: get all the correct family recipes in the database
+      responses:
+        "200":
+          description: full data about the recipe
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        "404":
+          description: no recipe of type family
+
+
+
+
   /user/lastViewedRecipes:
       get:
         tags:
