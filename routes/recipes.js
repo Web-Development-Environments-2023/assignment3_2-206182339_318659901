@@ -32,6 +32,15 @@ router.get("/search",async (req, res, next) => {
     next(error);
   }
 });
+router.get('/familyRecipes', async (req,res,next)=>{
+  try {
+    // const user_id = req.session.user_id; 
+    const recipe = await recipes_utils.getFamilyRecipes();
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+})
 /**
  * This path returns a full details of a recipe by its id
  */
@@ -60,14 +69,6 @@ router.get("/ExtendedRecipes/:recipeId", async (req, res, next) => {
   }
 });
 
-router.get('/familyRecipes', async (req,res,next)=>{
-  try {
-    const user_id = req.session.user_id; 
-    const recipe = await recipes_utils.getFamilyRecipes(user_id);
-    res.send(recipe);
-  } catch (error) {
-    next(error);
-  }
-})
+
 
 module.exports = router;

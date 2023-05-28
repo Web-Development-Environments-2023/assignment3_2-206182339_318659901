@@ -17,7 +17,7 @@ async function getSeenRecipes(user_id){
 }
 
 async function CreateRecipe(user_id,image,title,readyInMinutes,glutenFree,vegan,vegetarian,ingredients,prepInstructions,numberOfDishes){
-    const query = `INSERT INTO userrecipes (user_id, image, title, prep_time, vegetarian, vegan, gluten_free, number_of_dishes, ingredients, instructions, popularity) VALUES ('${user_id}', '${image}', '${title}', ${readyInMinutes}, ${vegetarian}, ${vegan}, ${(glutenFree)}, ${numberOfDishes}, '${ingredients}', '${prepInstructions}', 0)`;
+    const query = `INSERT INTO userrecipes (user_id, image, title, prep_time, vegetarian, vegan, gluten_free, number_of_dishes, ingredients, instructions, popularity, is_family) VALUES ('${user_id}', '${image}', '${title}', ${readyInMinutes}, ${vegetarian}, ${vegan}, ${(glutenFree)}, ${numberOfDishes}, '${ingredients}', '${prepInstructions}', 0, 0)`;
     await DButils.execQuery(query)
 }
 async function getMyRecipes(user_id){

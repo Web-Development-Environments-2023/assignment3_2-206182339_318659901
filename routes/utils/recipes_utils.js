@@ -221,27 +221,27 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
     return  res;
 }
 
-async function getFamilyRecipes(user_id){
-    const data = await DButils.execQuery(`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
-    const dataList = [];
-    for (let i = 0; i < data.length; i++) {
-        dataList.push(
-            { id : query.recipeid.toString(),
-                name : query.recname,
-                member : familymember,
-                time : makingtime,
-                ingredients : ingredients,
-                summary : summary
-                // TODO add an image
-            }
-        )
-    //   const row = data[i];
-    //   for (const columnName in row) {
-    //     const columnData = row[columnName];
-    //     dataList.push(columnData);
-    //   }
-    }
-    return dataList;
+async function getFamilyRecipes(){
+    const data = await DButils.execQuery(`SELECT image, title, prep_time, vegetarian, vegan, gluten_free, ingredients, instructions FROM userrecipes WHERE is_family = 1;`);
+    // const dataList = [];
+    // for (let i = 0; i < data.length; i++) {
+    //     dataList.push(
+    //         { id : query.recipeid.toString(),
+    //             name : query.recname,
+    //             member : familymember,
+    //             time : makingtime,
+    //             ingredients : ingredients,
+    //             summary : summary
+    //             // TODO add an image
+    //         }
+    //     )
+    // //   const row = data[i];
+    // //   for (const columnName in row) {
+    // //     const columnData = row[columnName];
+    // //     dataList.push(columnData);
+    // //   }
+    // }
+    return data;
 }
 
 
@@ -284,3 +284,4 @@ exports.getRecipesPreview = getRecipesPreview;
 exports.getRecipeFullDetails=getRecipeFullDetails;
 exports.getRandomRecipesAPI=getRandomRecipesAPI;
 exports.getSearchResults=getSearchResults;
+exports.getFamilyRecipes=getFamilyRecipes;
