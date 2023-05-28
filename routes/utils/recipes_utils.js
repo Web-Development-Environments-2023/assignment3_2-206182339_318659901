@@ -2,6 +2,7 @@ const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 const DButils = require("./DButils");
 const { search } = require("../auth");
+const { query } = require("express");
 
 
 
@@ -221,19 +222,22 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
 async function getFamilyRecipes(user_id){
     const data = await DButils.execQuery(`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
     const dataList = [];
-    
     for (let i = 0; i < data.length; i++) {
-      // Get the row object
-      const row = data[i];
-  
-      // Loop over the columns in the row
-      for (const columnName in row) {
-        // Get the data for each column
-        const columnData = row[columnName];
-        
-        // Store the data in the list
-        dataList.push(columnData);
-      }
+        dataList.push(
+            { id : query.recipeid.toString(),
+                name : query.recname,
+                member : familymember,
+                time : makingtime,
+                ingredients : ingredients,
+                summary : summary
+                // TODO add an image
+            }
+        )
+    //   const row = data[i];
+    //   for (const columnName in row) {
+    //     const columnData = row[columnName];
+    //     dataList.push(columnData);
+    //   }
     }
     return dataList;
 }
