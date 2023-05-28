@@ -219,8 +219,23 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
 }
 
 async function getFamilyRecipes(user_id){
-    return 
-        (`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
+    const data = await DButils.execQuery(`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
+    const dataList = [];
+    
+    for (let i = 0; i < data.length; i++) {
+      // Get the row object
+      const row = data[i];
+  
+      // Loop over the columns in the row
+      for (const columnName in row) {
+        // Get the data for each column
+        const columnData = row[columnName];
+        
+        // Store the data in the list
+        dataList.push(columnData);
+      }
+    }
+    return dataList;
 }
 
 
