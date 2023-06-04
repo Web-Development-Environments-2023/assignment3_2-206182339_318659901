@@ -11,6 +11,28 @@ const { query } = require("express");
  * @param {*}  recipes_info
  */
 
+
+async function isfavorite(user_id,recipe_id){
+    if (user_id===undefined){
+        return false;
+    }
+    const rowscount= await DButils.execQuery(`SELECT * FROM favoriterecipes WHERE user_id=${user_id} AND recipe_id=${recipe_id}`);
+    if (rowscount.length>0){
+        return true;
+    }
+    return false;
+}
+
+async function is_seen(user_id,recipe_id){
+    if (user_id===undefined){
+        return false;
+    }
+    const rowscount= await DButils.execQuery(`SELECT * FROM recipeseen WHERE user_id=${user_id} AND recipe_id=${recipe_id}`);
+    if (rowscount.length>0){
+        return true;
+    }
+    return false;
+}
 async function getRandomRecipes(){
     const recipes = await axios.get(`${api_domain}/random`, {
         params:{
@@ -30,8 +52,9 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
-async function extractPreviewRecipeDetails(recipes_info) {
+async function extractPreviewRecipeDetails(recipes_info,user_id) {
     return await Promise.all(recipes_info.map((recipe_info) => {
+        
         //check the data type so it can work with diffrent types of data
         let data = recipe_info;
         if (recipe_info.data) {
@@ -47,19 +70,27 @@ async function extractPreviewRecipeDetails(recipes_info) {
             vegetarian,
             glutenFree,
         } = data;
-        return {
-            id: id,
-            title: title,
-            image: image,
-            readyInMinutes: readyInMinutes,
-            popularity: aggregateLikes,
-            vegan: vegan,
-            vegetarian: vegetarian,
-            glutenFree: glutenFree
-        }
+        const isFavoritePromise = isfavorite(user_id, data.id);
+        const isSeenPromise = is_seen(user_id, data.id);
+        return Promise.all([isFavoritePromise, isSeenPromise]).then(
+            ([isFavorite, isSeen]) => {
+              return {
+                id: id,
+                title: title,
+                image: image,
+                readyInMinutes: readyInMinutes,
+                popularity: aggregateLikes,
+                vegan: vegan,
+                vegetarian: vegetarian,
+                glutenFree: glutenFree,
+                Favorite: isFavorite,
+                Seen: isSeen,
+              };
+            }
+          );
     }))
   }
-  async function getRecipesPreview(recipes_ids_list) {
+  async function getRecipesPreview(recipes_ids_list,user_id) {
     let promises = [];
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
@@ -67,11 +98,13 @@ async function extractPreviewRecipeDetails(recipes_info) {
     let info_res = await Promise.all(promises);
     info_res.map((recp)=>{console.log(recp.data)});
     // console.log(info_res);
-    return extractPreviewRecipeDetails(info_res);
+    return extractPreviewRecipeDetails(info_res,user_id);
   }
 
-async function getRecipeDetails(recipe_id) {
+async function getRecipeDetails(recipe_id,user_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
+    let isFavorite= await isfavorite(user_id,recipe_id);
+    let isSeen= await is_seen(user_id,recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
     return {
         id: id,
@@ -82,20 +115,22 @@ async function getRecipeDetails(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
+        Favorite: isFavorite,
+        Seen: isSeen
         
     }
 }
 
 
 
-async function getRandomRecipesAPI(){
+async function getRandomRecipesAPI(user_id){
     let random_pool = await getRandomRecipes();
     let filterd_random_pool = random_pool.data.recipes.filter((random)=>(random.instructions != "") && (random.image != "") && random.image)
     //  && random.title && random.readyInMinutes && random.aggregateLikes && random.vegan && random.vegetarian && random.glutenFree)
     if(filterd_random_pool.length < 3){
-        return getRandomRecipesAPI();
+        return getRandomRecipesAPI(user_id);
     }
-    return extractPreviewRecipeDetails([filterd_random_pool[0], filterd_random_pool[1], filterd_random_pool[2]]);
+    return extractPreviewRecipeDetails([filterd_random_pool[0], filterd_random_pool[1], filterd_random_pool[2]], user_id);
 
 
 }
@@ -110,6 +145,7 @@ async function getRecipeInfoFromApi(recipe_id) {
     let ingredients = "";
     data.data.extendedIngredients.forEach((element) => 
         ingredients = ingredients+element.name+"-"+element.amount.toString()+element.unit+" | ")
+    
     return {
         id:data.data.id.toString(),
         title: data.data.title,
@@ -144,6 +180,8 @@ async function getRecipeInfoFromDb(recipe_id){
 }
 async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
     let recipe_info = null
+    let isFavorite= await isfavorite(user_id,recipe_id);
+    let isSeen= await is_seen(user_id,recipe_id);
     if(isMyrecipe){
         recipe_info =await getRecipeInfoFromDb(recipe_id);
     }
@@ -173,7 +211,10 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
             popularity: aggregateLikes,
             vegetarian : vegetarian,
             vegan: vegan,
-            glutenFree: glutenFree
+            glutenFree: glutenFree,
+            Favorite:isFavorite,
+            Seen: isSeen
+          
               
         }, 
         ingredients: ingredients, 

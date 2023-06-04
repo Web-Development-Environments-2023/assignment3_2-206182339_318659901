@@ -45,7 +45,7 @@ router.get('/favorites', async (req,res,next) => {
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array,user_id);
     res.status(200).send(results);
   } catch(error){
     next(error); 
@@ -59,7 +59,7 @@ router.get('/lastViewedRecipes', async (req,res,next) => {
     const recipes_id = await user_utils.getSeenRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array,user_id);
     res.status(200).send(results);
   } catch(error){
     next(error); 
