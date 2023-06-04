@@ -180,9 +180,97 @@ async function addUserRecipeToSeen(recipe_id, user_id){
     }    
 }
 
+async function getSearchResults(name, number, cuisine, diet, intolerance, sort, user_id){
+    const resipes = await axios.get(`${api_domain}/complexSearch`, {
+        params:{
+            query: name,
+            number:number,
+            diet:diet,
+            cuisine:cuisine,
+            intolerances:intolerance,
+            addRecipeInformation:true,
+            sort:sort,
+            apiKey: process.env.api_token
+        }
+    })
+    res=resipes.data.results.map(r=>{
+        return {
+            id:r.id,
+            title:r.title,
+            image:r.image,
+            glutenFree: r.glutenFree,
+            vegan: r.vegan,
+            vegetarian: r.vegetarian,
+            popularity:r.aggregateLikes,
+            prepTime:r.readyInMinutes,
+            
+            
+        }
+    })
+    
+    return  res;
+}
 
+async function getFamilyRecipes(user_id){
+    const data = await DButils.execQuery(`SELECT * FROM familyrecipes WHERE recipeid = ${user_id};`);
+    const dataList = [];
+    for (let i = 0; i < data.length; i++) {
+        dataList.push(
+            { id : query.recipeid.toString(),
+                name : query.recname,
+                member : familymember,
+                time : makingtime,
+                ingredients : ingredients,
+                summary : summary
+                // TODO add an image
+            }
+        )
+    //   const row = data[i];
+    //   for (const columnName in row) {
+    //     const columnData = row[columnName];
+    //     dataList.push(columnData);
+    //   }
+    }
+    return dataList;
+}
+
+
+
+// async function getSearchAPI(name, number, cuisine, diet, intolerance,sort) { 
+//     let search_url= `${api_domain}/complexSearch/?`
+//     if(name !== undefined){
+//         search_url = search_url + `&query=${name}`
+//     }
+//     if(cuisine !== undefined){
+//         search_url = search_url + `&cuisine=${cuisine}`
+//     }
+//     if(diet !== undefined){
+//         search_url = search_url + `&diet=${diet}`
+//     }
+//     if(intolerance !== undefined){
+//         search_url = search_url + `&intolerance=${intolerance}`
+//     }
+//     if(sort !== undefined){
+//         search_url = search_url + `&sort=${sort}`
+//     }
+//     search_url = search_url + `&instructionsRequired=true&addRecipeInformation=true` 
+//     if(number !== undefined){
+//         search_url = search_url + `&number=${number}`
+//     }
+    
+//     const response = await axios.get(search_url,{
+//         params: {
+//             number: 5,
+//             apiKey: process.env.api_token
+//         }
+//     });
+//     // return extractPreviewRecipeDetails(response.data.results,user_id);
+//     return response.data;
+
+// }
 exports.getRecipeDetails = getRecipeDetails;
 
 exports.getRecipesPreview = getRecipesPreview;
 exports.getRecipeFullDetails=getRecipeFullDetails;
-
+exports.getRandomRecipesAPI=getRandomRecipesAPI;
+exports.getSearchResults=getSearchResults;
