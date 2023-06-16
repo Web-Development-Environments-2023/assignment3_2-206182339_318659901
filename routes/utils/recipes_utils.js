@@ -143,16 +143,18 @@ async function getRecipeInfoFromApi(recipe_id) {
         }
     });
     let ingredients = "";
+    let instructions = "";
     data.data.extendedIngredients.forEach((element) => 
-        ingredients = ingredients+element.name+"-"+element.amount.toString()+element.unit+" | ")
-    
+        ingredients = ingredients+element.name+"-"+element.amount.toString()+" " +element.unit+" | ")
+    data.data.analyzedInstructions[0].steps.forEach((step) => 
+        instructions = instructions+ step.number + ". " + step.step + "\n")
     return {
         id:data.data.id.toString(),
         title: data.data.title,
         image: data.data.image,
         readyInMinutes: data.data.readyInMinutes,
         aggregateLikes: data.data.aggregateLikes,
-        prepInstructions: data.data.instructions,
+        prepInstructions:instructions,
         ingredients: ingredients,
         numberOfDishes: data.data.servings,
         vegetarian: data.data.vegetarian,
@@ -232,6 +234,7 @@ async function addUserRecipeToSeen(recipe_id, user_id){
 }
 
 async function getSearchResults(name, number, cuisine, diet, intolerance, sort, user_id){
+
     const resipes = await axios.get(`${api_domain}/complexSearch`, {
         params:{
             query: name,
@@ -245,6 +248,7 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
         }
     })
     res=resipes.data.results.map(r=>{
+        
         return {
             id:r.id,
             title:r.title,
