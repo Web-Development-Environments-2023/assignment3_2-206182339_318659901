@@ -233,38 +233,70 @@ async function addUserRecipeToSeen(recipe_id, user_id){
     }    
 }
 
-async function getSearchResults(name, number, cuisine, diet, intolerance, sort, user_id){
-
-    const resipes = await axios.get(`${api_domain}/complexSearch`, {
-        params:{
-            query: name,
-            number:number,
-            diet:diet,
-            cuisine:cuisine,
-            intolerances:intolerance,
-            addRecipeInformation:true,
-            sort:sort,
+async function getSearchResults(name, number, cuisine, diet, intolerance, sort, user_id) {
+    // const recipes = await axios.get(`${api_domain}/complexSearch`, {
+    //   params: {
+    //     query: name,
+    //     number: number,
+    //     diet: diet,
+    //     cuisine: cuisine,
+    //     intolerances: intolerance,
+    //     addRecipeInformation: true,
+    //     instructionsRequired : true,
+    //     sort: sort,
+    //     apiKey: process.env.api_token,
+    //   },
+    // });
+    let search_url= `${api_domain}/complexSearch/?`
+    if(name !== undefined){
+        search_url = search_url + `&query=${name}`
+    }
+    if(cuisine !== undefined){
+        search_url = search_url + `&cuisine=${cuisine}`
+    }
+    if(diet !== undefined){
+        search_url = search_url + `&diet=${diet}`
+    }
+    if(intolerance !== undefined){
+        search_url = search_url + `&intolerance=${intolerance}`
+    }
+    //TODO: check if instructions not emty
+    if(sort !== undefined){
+        search_url = search_url + `&sort=${sort}`
+    }
+    search_url = search_url + `&instructionsRequired=true&addRecipeInformation=true` 
+    console.log(search_url)
+    if(number !== undefined){
+        search_url = search_url + `&number=${number}`
+    }
+    
+    const response = await axios.get(search_url,{
+        params: {
+            // number: 5,
             apiKey: process.env.api_token
         }
-    })
-    res=resipes.data.results.map(r=>{
-        
+    });
+  
+    const res = await Promise.all(
+        response.data.results.map(async (r) => {
         return {
-            id:r.id,
-            title:r.title,
-            image:r.image,
-            glutenFree: r.glutenFree,
-            vegan: r.vegan,
-            vegetarian: r.vegetarian,
-            popularity:r.aggregateLikes,
-            prepTime:r.readyInMinutes,
-            
-            
-        }
-    })
-    
-    return  res;
-}
+          id: r.id,
+          title: r.title,
+          image: r.image,
+          glutenFree: r.glutenFree,
+          vegan: r.vegan,
+          vegetarian: r.vegetarian,
+          popularity: r.aggregateLikes,
+          readyInMinutes: r.readyInMinutes,
+          Favorite: await isfavorite(user_id, r.id),
+          Seen : await is_seen(user_id, r.id),
+        };
+      })
+    );
+  
+    return res;
+  }
+  
 
 async function getFamilyRecipes(){
     const data = await DButils.execQuery(`SELECT image, title, prep_time, vegetarian, vegan, gluten_free, ingredients, instructions FROM userrecipes WHERE is_family = 1;`);

@@ -27,7 +27,7 @@ router.get("/search",async (req, res, next) => {
     
     const user_id = req.session.user_id; // can be null
     //last vied recipe
-    const recipe = await recipes_utils.getSearchResults(req.query.recipename,req.query.number,req.query.Cuisine,req.query.diet, req.query.intolerance,req.query.sort,user_id);
+    const recipe = await recipes_utils.getSearchResults(req.query.recipename,req.query.number,req.query.cuisine,req.query.diet, req.query.intolerance,req.query.sort,user_id);
     res.send(recipe);
   } catch (error) {
     next(error);
