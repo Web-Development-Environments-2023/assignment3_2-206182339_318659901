@@ -10,8 +10,12 @@ async function getFavoriteRecipes(user_id){
 }
 
 async function getSeenRecipes(user_id){
-    const recipes_id = await DButils.execQuery(`SELECT  recipe_id 
-    FROM recipeseen WHERE user_id = ${user_id} ORDER BY id desc LIMIT 3;`);
+    const recipes_id = await DButils.execQuery(`SELECT DISTINCT recipe_id
+    FROM recipeseen
+    WHERE user_id = ${user_id}
+    GROUP BY recipe_id
+    ORDER BY MAX(id) DESC
+    LIMIT 3;`);
     
     return recipes_id;
 }

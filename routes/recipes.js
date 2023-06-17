@@ -62,7 +62,7 @@ router.get("/:recipeId", async (req, res, next) => {
  */
 router.get("/ExtendedRecipes/:recipeId", async (req, res, next) => {
   try {
-    const isMyRecipe=req.body.isMyRecipe=='true';
+    const isMyRecipe = req.query.isMyRecipe === 'true';
     const user_id = req.session.user_id; // can be null
     const recipe = await recipes_utils.getRecipeFullDetails(isMyRecipe,req.params.recipeId, user_id, add_to_seen = true);
     res.send(recipe);

@@ -184,6 +184,7 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
     let recipe_info = null
     let isFavorite= await isfavorite(user_id,recipe_id);
     let isSeen= await is_seen(user_id,recipe_id);
+    
     if(isMyrecipe){
         recipe_info =await getRecipeInfoFromDb(recipe_id);
     }
