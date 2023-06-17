@@ -52,6 +52,16 @@ router.get('/favorites', async (req,res,next) => {
   }
 });
 
+router.get('/userid', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    
+  
+    res.status(200).send(user_id+"");
+  } catch(error){
+    next(error); 
+  }
+});
 router.get('/lastViewedRecipes', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
