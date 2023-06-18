@@ -300,7 +300,7 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
   
 
 async function getFamilyRecipes(){
-    const data = await DButils.execQuery(`SELECT image, title, prep_time, vegetarian, vegan, gluten_free, ingredients, instructions FROM userrecipes WHERE is_family = 1;`);
+    const data = await DButils.execQuery(`select rid as id, title, image, prep_time as readyInMinutes, popularity, vegan, vegetarian, gluten_free as glutenFree from userrecipes WHERE is_family = 1;`);
 
     return data;
 }
