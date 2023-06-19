@@ -177,7 +177,9 @@ async function getRecipeInfoFromDb(recipe_id){
         numberOfDishes: data[0].number_of_dishes,
         vegetarian:(data[0].vegetarian[0]==1),
         vegan: (data[0].vegan[0]==1),
-        glutenFree: (data[0].gluten_free[0]==1)
+        glutenFree: (data[0].gluten_free[0]==1),
+        familyMember :  data[0].familyMember,
+        familyTime: data[0].familyTime,
     }; // get first element (only one) fields needed
 }
 async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
@@ -191,6 +193,7 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
 
     else if (!isMyrecipe){
         recipe_info = await getRecipeInfoFromApi(recipe_id);
+        
    
     }
     else{ // neither inner or outer
@@ -222,7 +225,9 @@ async function getRecipeFullDetails(isMyrecipe,recipe_id, user_id, add_to_seen){
         }, 
         ingredients: ingredients, 
         prepInstructions: prepInstructions, 
-        numberOfDishes: numberOfDishes
+        numberOfDishes: numberOfDishes,
+        familyMember:recipe_info.familyMember,
+        familyTime:recipe_info.familyTime,
     }
 
 }
@@ -300,7 +305,7 @@ async function getSearchResults(name, number, cuisine, diet, intolerance, sort, 
   
 
 async function getFamilyRecipes(){
-    const data = await DButils.execQuery(`select rid as id, title, image, prep_time as readyInMinutes, popularity, vegan, vegetarian, gluten_free as glutenFree from userrecipes WHERE is_family = 1;`);
+    const data = await DButils.execQuery(`select rid as id, title, image, prep_time as readyInMinutes, popularity, vegan, vegetarian, gluten_free as glutenFree, familyMember, familyTime from userrecipes WHERE is_family = 1;`);
 
     return data;
 }

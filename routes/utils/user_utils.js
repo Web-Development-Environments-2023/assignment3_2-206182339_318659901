@@ -25,7 +25,7 @@ async function CreateRecipe(user_id,image,title,readyInMinutes,glutenFree,vegan,
     await DButils.execQuery(query)
 }
 async function getMyRecipes(user_id){
-    const recipes_details = await DButils.execQuery(`select rid as id, title, image, prep_time as readyInMinutes, popularity, vegan, vegetarian, gluten_free as glutenFree from userrecipes where user_id='${user_id}'`);
+    const recipes_details = await DButils.execQuery(`select rid as id, title, image, prep_time as readyInMinutes, popularity, vegan, vegetarian, gluten_free as glutenFree from userrecipes where user_id='${user_id}' and is_family != 1`);
     return recipes_details;
 }
 
