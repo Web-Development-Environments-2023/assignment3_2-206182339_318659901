@@ -109,6 +109,43 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+  /users/MyRecipes:
+    get:
+      tags:
+      - Users
+      summary: get a the details of recipe that the user created
+      description: A json object contains all the details about this recipe
+      operationId: CreatedRecipe
+
+      responses:
+        '200':
+          description: A the details of a recipe that the user created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        '400':
+          description: bad input parameter  
+
+    post:
+      tags:
+        - Users
+      summary: the user can create a new recipe
+      description: A json object contains details about the new recipe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtendedRecipe'
+        description: Inventory item to add
+      responses:
+        '201':
+          description: A new recipe has been added
+        '400':
+          description: wrong input parameter
   /recipes/{recipeId}:
     get:
       tags:
@@ -133,6 +170,150 @@ paths:
                 $ref: '#/components/schemas/RecipePreview'
         "404":
           description: recipeId is not exists
+  /recipes/ExtendedRecipes/{recipeId}:
+    get:
+      tags:
+      - Recipes
+      summary: Return full details on recipe by its ID
+      description: Return full details on recipe by its ID
+      parameters:
+      - name: recipeId
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: full data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedRecipe'
+        "404":
+          description: recipeId is not exists
+
+
+  /recipes/randomRecipes:
+      get:
+        tags:
+          - Recipes
+        summary: get 3 random recipes from the server.
+        responses:
+          '200':
+            description: The 3 randomal recipes.
+            content:
+              application/json:
+                schema:
+                  type: array 
+                  items:
+                    $ref: '#/components/schemas/RecipePreview'
+                   
+          '400':
+            description: No recipes found
+
+  /recipes/search:
+      get:
+        tags:
+          - Recipes
+        summary: search for recipes by filter
+        parameters:
+        - name: recipename
+          in: query
+          description: recipe name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: number
+          in: query
+          description: how much recipes will return :5/10/15
+          style: simple
+          explode: false
+          schema:
+            type: integer
+        - name: Cuisine
+          in: query
+          description: kind of recipe
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: diet
+          in: query
+          description: specific diet of a recipe
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: intolerance
+          in: query
+          description: specific intolerance of a recipe
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        responses:
+          '200':
+            description: The recipes came back from the search.
+            content:
+              application/json:
+                schema:
+                  type: array 
+                  items:
+                    $ref: '#/components/schemas/RecipePreview'
+                   
+          '400':
+            description: No recipes found
+
+  /recipes/familyRecipes:
+     get:
+      tags:
+        - Recipes
+      summary: Return the family recipes
+      description: get all the correct family recipes in the database
+      responses:
+        "200":
+          description: full data about the recipe
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        "404":
+          description: no recipe of type family
+
+
+
+
+  /user/lastViewedRecipes:
+      get:
+        tags:
+        - Users 
+        summary: Return the 3 last seen recipes the user watched
+        description: Get an array of recipes that were seen by a specific user
+        responses:
+          "200":
+            description: data about the user's last seen recipes returned
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RecipePreview'
+          "401":
+            description: user is not authorized
+        security:
+        - cookieAuth: []
+
+
 components:
   schemas:
     User:
@@ -227,4 +408,39 @@ components:
           type: boolean
           description: indication if the recipe is gluten free
           example: false
-  
+
+    ExtendedRecepie:
+      required:
+      - ingredient
+      - numberOfDishes
+      - prepInstructions
+      - recepiePreview
+      type: object
+      properties:
+        recipePreview:
+          $ref: '#/components/schemas/RecipePreview'
+        ingredient:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        prepInstructions:
+          type: string
+          format: <step number><delimiter><instruction>.
+          example: 1) boil water. 2) put coffe in cup.
+        numberOfDishes:
+          type: number
+    Ingredient:
+        required:
+        - amount
+        - name
+        type: object
+        properties:
+          name:
+            type: string
+            example: Paprika
+          amount:
+            type: string
+            format: <amount> <units>
+            example: 1 Liter
+    
+
